@@ -1,0 +1,50 @@
+The keys for the RSA algorithm are generated the following way:
+
+1. Choose two distinct prime numbers p and q.
+• For security purposes, the integers p and q should be chosen at random, and should be similar in magnitude but 'differ in length by a few digits to make factoring
+harder. Prime integers can be efficiently found using a primality test.
+
+2. Compute n = p*q.
+• n is used as the modulus for both the public and private keys. Its length, usually expressed in bits, is the key length.
+
+3. Compute λ(n) = lcm(λ(p), λ(q))
+= lcm(p − 1, q − 1),
+where λ is Carmichael's totient function.This value is kept private.
+
+4. Choose an integer e such that 1
+< e < λ(n) and gcd(e, λ(n)) = 1;
+i.e., e and λ(n) are coprime.
+
+5. Determine d as d ≡ e
+
+−1 (mod λ(n));
+i.e., d is the modular multiplicative inverse of e (modulo λ(n)).
+• This is more clearly stated as:
+solve for d given d⋅e ≡ 1(mod λ(n)).
+• e having a short bit-length and small Hamming weight results in more efficient encryption – most commonly 216 + 1 = 65,537.
+However, much smaller values of e (such as 3) have been shown to be less secure in some settings.
+• e is released as the public key exponent.
+• d is kept as the private key
+exponent.
+
+The public key consists of the modulus n and the public (or encryption) exponent e. The private key consists of the modulus n and the private (or
+decryption) exponent d, which must be kept secret. p, q, and λ(n) must also be kept secret because they can be used to calculate d.
+
+Key distribution
+Suppose that Kishan wants to send a secret message to Divya. If they decide to use RSA, Kishan must know Divya's public key to encrypt the message and, Divya must use her
+private key to decrypt the message. To enable Kishan to send his encrypted messages, Divya transmits her public key (n, e) to
+Kishan via a reliable, but not necessarily secret route. Divya's private key (d), is never distributed.
+
+Encryption
+After Kishan obtains Divya's public key, he can send a message M to Divya.
+To do it, he first turns M (strictly speaking, the un-padded plaintext) into an integer m (strictly speaking, the padded plaintext), such that 0 ≤ m < n by using an agreed-upon reversible protocol known as
+a padding scheme. He then computes the ciphertext c, using Divya's public key e, corresponding to c =m^e mod n.
+
+This can be done reasonably quickly,
+even for 500-bit numbers, using modular
+exponentiation. Kishan then transmits c to
+Divya.
+
+Decryption
+Divya can recover m from c by using her private key exponent d by computing c^d= (m^e)^d mod n.
+Given m, he can recover the original message M by reversing the padding scheme.
